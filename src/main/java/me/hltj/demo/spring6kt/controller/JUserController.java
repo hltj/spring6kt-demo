@@ -64,4 +64,9 @@ public class JUserController {
     Mono<JPreview> serialPreview(@RequestParam String name) {
         return jUserService.serialPreview(name);
     }
+
+    @GetMapping("/_preview2")
+    Mono<JPreview> concurrentPreview(@RequestParam String name) {
+        return jUserService.concurrentPreview(name);
+    }
 }

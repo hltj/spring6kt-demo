@@ -24,4 +24,7 @@ class KUserController(private val kUserService: KUserService, private val jUserS
 
     @GetMapping("/_preview1")
     suspend fun serialPreview(@RequestParam name: String) = kUserService.serialPreview(name)
+
+    @GetMapping("/_preview2")
+    suspend fun concurrentPreview(@RequestParam name: String) = kUserService.concurrentPreview(name)
 }

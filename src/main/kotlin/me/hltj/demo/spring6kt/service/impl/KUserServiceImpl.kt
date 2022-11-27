@@ -1,5 +1,7 @@
 package me.hltj.demo.spring6kt.service.impl
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.reactor.asFlux
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.mono
@@ -32,5 +34,11 @@ class KUserServiceImpl(private val kUserRepository: KUserRepository) : KUserServ
         val count = kUserRepository.countByName(name)
         val first = kUserRepository.findFirst1ByName(name)
         return KPreview(count, first)
+    }
+
+    override suspend fun concurrentPreview(name: String) = coroutineScope {
+        val asyncCount = async { kUserRepository.countByName(name) }
+        val asyncFirst = async { kUserRepository.findFirst1ByName(name) }
+        KPreview(asyncCount.await(), asyncFirst.await())
     }
 }

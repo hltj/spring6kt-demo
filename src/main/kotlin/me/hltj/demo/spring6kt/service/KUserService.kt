@@ -17,6 +17,8 @@ interface KUserService {
     fun getAllByNameFlux(name: String): Flux<KUser>
 
     suspend fun serialPreview(name: String): KPreview
+
+    suspend fun concurrentPreview(name: String): KPreview
 }
 
 @JvmRecord

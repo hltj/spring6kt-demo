@@ -9,6 +9,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @Service
 public class JUserServiceImpl implements JUserService {
@@ -41,6 +42,15 @@ public class JUserServiceImpl implements JUserService {
                 jUserRepository.getFirst1ByName(name).map(first ->
                         new JPreview(count, first)
                 ).defaultIfEmpty(new JPreview(count, null))
+        );
+    }
+
+    @Override
+    public Mono<JPreview> concurrentPreview(String name) {
+        var countMono = jUserRepository.countByName(name);
+        var firstOptMono = jUserRepository.getFirst1ByName(name).map(Optional::of).defaultIfEmpty(Optional.empty());
+        return Mono.zip(countMono, firstOptMono, (count, firstOpt) ->
+                new JPreview(count, firstOpt.orElse(null))
         );
     }
 }

@@ -16,6 +16,8 @@ public interface JUserService {
 
     Mono<JPreview> serialPreview(@Nonnull String name);
 
+    Mono<JPreview> concurrentPreview(@Nonnull String name);
+
     record JUser(int id, @Nonnull String name, @Nonnull Instant regTime) {
     }
 
