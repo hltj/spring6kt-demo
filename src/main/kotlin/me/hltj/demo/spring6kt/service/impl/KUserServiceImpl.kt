@@ -14,4 +14,8 @@ class KUserServiceImpl(private val kUserRepository: KUserRepository) : KUserServ
         kUserRepository.save(KUserEntity(null, name, Instant.now())).map {
             KUser(it.id!!, it.name, it.regTime)
         }.awaitSingle()
+
+    override suspend fun getCountByName(name: String) = kUserRepository.countByName(name)
+
+    override fun getAllByName(name: String) = kUserRepository.findAllByName(name)
 }

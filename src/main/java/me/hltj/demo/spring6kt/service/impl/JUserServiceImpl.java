@@ -5,6 +5,7 @@ import me.hltj.demo.spring6kt.model.JUserEntity;
 import me.hltj.demo.spring6kt.repository.JUserRepository;
 import me.hltj.demo.spring6kt.service.JUserService;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
@@ -22,5 +23,15 @@ public class JUserServiceImpl implements JUserService {
         return jUserRepository.save(new JUserEntity(null, name, Instant.now())).map(entity ->
                 new JUser(entity.id(), entity.name(), entity.regTime())
         );
+    }
+
+    @Override
+    public Mono<Integer> getCountByName(@Nonnull String name) {
+        return jUserRepository.countByName(name);
+    }
+
+    @Override
+    public Flux<JUser> getAllByName(@Nonnull String name) {
+        return jUserRepository.findAllByName(name);
     }
 }
