@@ -23,6 +23,18 @@ import java.util.List;
 public class JSimpleController {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+    private static final String INVALID_PARAMS_JSON_STR = """
+            [
+              {
+                "name": "age",
+                "reason": "must be a positive integer"
+              },
+              {
+                "name": "color",
+                "reason": "must be 'red', 'green' or 'blue'"
+              }
+            ]""";
+
     @GetMapping("/hello")
     String hello() {
         return "Hello Spring 6 & Java 17";
@@ -43,21 +55,19 @@ public class JSimpleController {
     @SneakyThrows
     @GetMapping("/problem-demo")
     Mono<Void> problemDemo() {
-        var pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "请求所传 age 与 color 参数不正确");
+        var invalidParamsJson = OBJECT_MAPPER.readValue(
+                INVALID_PARAMS_JSON_STR,
+                new TypeReference<List<LinkedHashMap<String, Object>>>() {
+                });
+
+        var pd = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                "请求所传 age 与 color 参数不正确"
+        );
         pd.setType(URI.create("/problem/invalid-params"));
         pd.setTitle("参数错误");
-        pd.setProperty("invalid_params", OBJECT_MAPPER.readValue("""
-                [
-                  {
-                    "name": "age",
-                    "reason": "must be a positive integer"
-                  },
-                  {
-                    "name": "color",
-                    "reason": "must be 'red', 'green' or 'blue'"
-                  }
-                ]""", new TypeReference<List<LinkedHashMap<String, Object>>>() {
-        }));
+        pd.setProperty("invalid_params", invalidParamsJson);
+
         return Mono.just(true).delayElement(Duration.ofSeconds(3)).flatMap(x ->
                 Mono.error(new ErrorResponseException(HttpStatus.BAD_REQUEST, pd, null))
         );

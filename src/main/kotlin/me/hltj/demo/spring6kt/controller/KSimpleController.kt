@@ -19,6 +19,18 @@ import kotlin.time.Duration
 class KSimpleController {
     private val objectMapper = jacksonObjectMapper()
 
+    private val invalidParamsJsonStr = """
+            [
+              {
+                "name": "age",
+                "reason": "must be a positive integer"
+              },
+              {
+                "name": "color",
+                "reason": "must be 'red', 'green' or 'blue'"
+              }
+            ]""".trimIndent()
+
     @GetMapping("/hello")
     fun hello() = "Hello Spring 6 & Kotlin 1.7"
 
@@ -36,25 +48,17 @@ class KSimpleController {
 
     @GetMapping("/problem-demo")
     suspend fun problemDemo() {
-        val pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "请求所传 age 与 color 参数不正确")
+        val invalidParamsJson: List<LinkedHashMap<String, Any>> =
+            objectMapper.readValue(invalidParamsJsonStr)
+
+        val pd = ProblemDetail.forStatusAndDetail(
+            HttpStatus.BAD_REQUEST,
+            "请求所传 age 与 color 参数不正确"
+        )
         pd.type = URI.create("/problem/invalid-params")
         pd.title = "参数错误"
-        pd.setProperty(
-            "invalid_params",
-            objectMapper.readValue<List<LinkedHashMap<String, Any>>>(
-                """
-                [
-                  {
-                    "name": "age",
-                    "reason": "must be a positive integer"
-                  },
-                  {
-                    "name": "color",
-                    "reason": "must be 'red', 'green' or 'blue'"
-                  }
-                ]""".trimIndent()
-            )
-        )
+        pd.setProperty("invalid_params", invalidParamsJson)
+
         with(Duration) { delay(3.seconds) }
         throw ErrorResponseException(HttpStatus.BAD_REQUEST, pd, null)
     }
