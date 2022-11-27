@@ -2,8 +2,10 @@ package me.hltj.demo.spring6kt.controller;
 
 import kotlinx.coroutines.GlobalScope;
 import kotlinx.coroutines.reactor.MonoKt;
+import kotlinx.coroutines.reactor.ReactorFlowKt;
 import me.hltj.demo.spring6kt.service.JUserService;
 import me.hltj.demo.spring6kt.service.JUserService.JUser;
+import me.hltj.demo.spring6kt.service.KUser;
 import me.hltj.demo.spring6kt.service.KUserService;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -45,5 +47,15 @@ public class JUserController {
     @GetMapping("")
     Flux<JUser> getMulti(@RequestParam String name) {
         return jUserService.getAllByName(name);
+    }
+
+    @GetMapping("/_k1")
+    Flux<KUser> getK1Multi(@RequestParam String name) {
+        return kUserService.getAllByNameFlux(name);
+    }
+
+    @GetMapping("/_k2")
+    Flux<KUser> getK2Multi(@RequestParam String name) {
+        return ReactorFlowKt.asFlux(kUserService.getAllByName(name));
     }
 }
