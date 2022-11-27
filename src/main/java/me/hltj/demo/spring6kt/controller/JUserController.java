@@ -4,6 +4,7 @@ import kotlinx.coroutines.GlobalScope;
 import kotlinx.coroutines.reactor.MonoKt;
 import kotlinx.coroutines.reactor.ReactorFlowKt;
 import me.hltj.demo.spring6kt.service.JUserService;
+import me.hltj.demo.spring6kt.service.JUserService.JPreview;
 import me.hltj.demo.spring6kt.service.JUserService.JUser;
 import me.hltj.demo.spring6kt.service.KUser;
 import me.hltj.demo.spring6kt.service.KUserService;
@@ -57,5 +58,10 @@ public class JUserController {
     @GetMapping("/_k2")
     Flux<KUser> getK2Multi(@RequestParam String name) {
         return ReactorFlowKt.asFlux(kUserService.getAllByName(name));
+    }
+
+    @GetMapping("/_preview1")
+    Mono<JPreview> serialPreview(@RequestParam String name) {
+        return jUserService.serialPreview(name);
     }
 }

@@ -21,4 +21,7 @@ class KUserController(private val kUserService: KUserService, private val jUserS
 
     @GetMapping("/_j")
     fun getJMulti(@RequestParam name: String): Flow<JUser> = jUserService.getAllByName(name).asFlow()
+
+    @GetMapping("/_preview1")
+    suspend fun serialPreview(@RequestParam name: String) = kUserService.serialPreview(name)
 }

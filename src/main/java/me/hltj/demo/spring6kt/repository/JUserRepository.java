@@ -10,5 +10,7 @@ import reactor.core.publisher.Mono;
 public interface JUserRepository extends ReactiveCrudRepository<JUserEntity, @NonNull Integer> {
     Mono<Integer> countByName(@NonNull String name);
 
+    Mono<JUser> getFirst1ByName(@NonNull String name);
+
     Flux<JUser> findAllByName(@NonNull String name);
 }

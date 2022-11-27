@@ -5,6 +5,7 @@ import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.mono
 import me.hltj.demo.spring6kt.model.KUserEntity
 import me.hltj.demo.spring6kt.repository.KUserRepository
+import me.hltj.demo.spring6kt.service.KPreview
 import me.hltj.demo.spring6kt.service.KUser
 import me.hltj.demo.spring6kt.service.KUserService
 import org.springframework.stereotype.Service
@@ -26,4 +27,10 @@ class KUserServiceImpl(private val kUserRepository: KUserRepository) : KUserServ
     override fun getAllByName(name: String) = kUserRepository.findAllByName(name)
 
     override fun getAllByNameFlux(name: String): Flux<KUser> = getAllByName(name).asFlux()
+
+    override suspend fun serialPreview(name: String): KPreview {
+        val count = kUserRepository.countByName(name)
+        val first = kUserRepository.findFirst1ByName(name)
+        return KPreview(count, first)
+    }
 }

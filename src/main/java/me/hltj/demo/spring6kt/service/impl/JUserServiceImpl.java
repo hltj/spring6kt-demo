@@ -34,4 +34,13 @@ public class JUserServiceImpl implements JUserService {
     public Flux<JUser> getAllByName(@Nonnull String name) {
         return jUserRepository.findAllByName(name);
     }
+
+    @Override
+    public Mono<JPreview> serialPreview(@Nonnull String name) {
+        return jUserRepository.countByName(name).flatMap(count ->
+                jUserRepository.getFirst1ByName(name).map(first ->
+                        new JPreview(count, first)
+                ).defaultIfEmpty(new JPreview(count, null))
+        );
+    }
 }

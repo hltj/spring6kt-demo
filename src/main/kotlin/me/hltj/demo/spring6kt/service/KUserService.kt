@@ -15,7 +15,12 @@ interface KUserService {
     fun getAllByName(name: String): Flow<KUser>
 
     fun getAllByNameFlux(name: String): Flux<KUser>
+
+    suspend fun serialPreview(name: String): KPreview
 }
 
 @JvmRecord
 data class KUser(val id: Int, val name: String, val regTime: Instant)
+
+@JvmRecord
+data class KPreview(val count: Int, val first: KUser?)

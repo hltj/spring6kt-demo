@@ -8,5 +8,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository
 interface KUserRepository : ReactiveCrudRepository<KUserEntity, Int> {
     suspend fun countByName(name: String): Int
 
+    suspend fun findFirst1ByName(name: String): KUser?
+
     fun findAllByName(name: String): Flow<KUser>
 }
