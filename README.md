@@ -1,1 +1,1 @@
-# Demo for Spring 6 & Kotlin VS Java
+# Demo for Spring 6 with Kotlin & Java
