@@ -1,6 +1,6 @@
 package me.hltj.demo.spring6kt.controller;
 
-import kotlinx.coroutines.GlobalScope;
+import kotlin.coroutines.EmptyCoroutineContext;
 import kotlinx.coroutines.reactor.MonoKt;
 import kotlinx.coroutines.reactor.ReactorFlowKt;
 import me.hltj.demo.spring6kt.service.JUserService;
@@ -40,7 +40,7 @@ public class JUserController {
 
     @GetMapping("/_k2_count")
     Mono<Integer> getKt2CountByName(@RequestParam String name) {
-        return MonoKt.mono(GlobalScope.INSTANCE.getCoroutineContext(), (scope, continuation) ->
+        return MonoKt.mono(EmptyCoroutineContext.INSTANCE, (scope, continuation) ->
                 kUserService.getCountByName(name, continuation)
         );
     }
